@@ -1,0 +1,68 @@
+rom web3 import Web3
+
+import json
+
+import time
+
+import paho.mqtt.client as mqtt
+
+
+
+
+
+# Fill in your infura API key here
+
+infura_url = "https://rinkeby.infura.io/v3/enter your infura endpoint here"
+
+web3 = Web3(Web3.HTTPProvider(infura_url))
+
+
+
+print(web3.isConnected())
+
+
+
+print(web3.eth.blockNumber)
+
+
+
+# Fill in your account here
+
+balance = web3.eth.getBalance("0x4dc9B19Ad41b431fF4DC0D6E06f00876A6608BE5")
+
+print(web3.fromWei(balance, "ether"))
+
+
+
+
+
+id = '20'
+
+
+
+
+
+client_telemetry_topic = id + '/telemetry'
+
+server_command_topic = id + '/commands'
+
+client_name = id + '_nightlight_server'
+
+
+
+
+
+
+
+mqtt_client = mqtt.Client(client_name)
+
+mqtt_client.connect('test.mosquitto.org')
+
+
+
+
+
+
+
+mqtt_client.loop_start()
+
