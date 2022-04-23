@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity >=0.6.0 <0.9.0;
+
+contract test {
+
+    uint256 public consumption;
+
+    struct People {
+        uint256 consumption;
+        string name;
+    }
+
+    People[] public people;
+    mapping(string => uint256) public consumptiontoname;
+
+    function store(uint256 _consumption) public {
+        consumption = _consumption;
+    }
+    
+    function retrieve() public view returns (uint256){
+        return consumption;
+    }
+
+    function addPerson(string memory _name, uint256 _consumption) public {
+        people.push(People(_consumption, _name));
+        consumptiontoname[_name] = _consumption;
+    }
+}
