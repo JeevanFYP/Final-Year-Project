@@ -1,0 +1,93 @@
+   ```python
+        from web3 import Web3, HTTPProvider, IPCProvider, WebsocketProvider
+        from flask import Flask
+        from flask_mqtt import Mqtt
+        import time
+        import json as json
+        import json
+        import time
+        import paho.mqtt.client as mqtt
+        
+        id = '20'
+        
+        client_telemetry_topic = id + '/telemetry'
+        server_command_topic = id + '/commands'
+        client_name = id + '_nightlight_server'
+        
+        mqtt_client = mqtt.Client(client_name)
+        mqtt_client.connect('test.mosquitto.org')
+        app = Flask(__name__)
+        app.config['test.mosquitto.org'] = 'yourbroker.com' # your broker address goes here
+        app.config['MQTT_BROKER_PORT'] = 1883 # default port for non-tls connection
+        app.config['MQTT_USERNAME'] = '' # No username set for now
+        app.config['MQTT_PASSWORD'] = '' # no password set for now
+        app.config['MQTT_KEEPALIVE'] = 5 # keepalive every 5 seconds
+        app.config['MQTT_TLS_ENABLED'] = False # set TLS to disabled for testing purposes
+        
+        mqtt_client.loop_start()
+        mqtt = Mqtt()
+        mqtt.init_app(app)
+        
+        running = True
+        
+        @mqtt.on_connect()
+        def handle_telemetry(client, userdata, message, rc):
+            payload = json.loads(message.payload.decode())
+            print("Message received:", payload)
+        
+            command ={'led_on' : payload['light'] < 300 }
+            print("Sending messages:", command)
+            
+            print('connectedquot');
+            mqtt.subscribe('client_telemetry_topic') #your MQTT topic here
+        
+        while running == True:
+             @mqtt.on_message()
+             def handle_mqtt_message(client, userdata, message):
+                 data = dict(
+                     topic=message.topic,
+                     payload=message.payload.decode()
+                 )
+                 light = (data[quotpayloadquot])
+                 light = int(light)
+                 print (light)
+                 #our function to store the MQTT payload on Ethereum goes here as store_results(barcode)
+                 print (quotOKquot)
+        
+        mqtt_client.subscribe(client_telemetry_topic)
+        mqtt_client.on_message = handle_telemetry
+        
+        while True:
+            time.sleep(2)
+        
+        w3 = Web3(HTTPProvider('https://ropsten.infura.io/inufrra api goes here'))
+        contract_address ='0x5a3AaF5274888e309f6dE86412389aaEaC01DE8B'
+        wallet_private_key = 'wallet private key goes here'
+        wallet_address = 'wallet address goes here'
+        contract = w3.eth.contract(address = contract_address, abi = abi)
+         
+        def store_results(x):
+            nonce = w3.eth.getTransactionCount(wallet_address)
+        #if something is failing, try print (nonce) to test connectivity to Infura here. Chain ID = 3 is Ropst>
+        #Below, we craft a transaction to set variable x in the smart contract to the value provided to this f>
+            txn_dict = contract.functions.set(x).buildTransaction({
+                'chainId': 3,
+                'gas': 140000,
+                'gasPrice': w3.toWei('40', 'gwei'),
+                'nonce': nonce,
+            })
+        #Then we sign the transaction with our private key
+            signed_txn = w3.eth.account.signTransaction(txn_dict, private_key=wallet_private_key)
+        #The signed transaction is sent to the blockchain using Infura as an endpoint
+            result = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        # Then we wait for a receipt. It can take a short while.
+            tx_receipt = w3.eth.getTransactionReceipt(result)
+            count = 0
+            while tx_receipt is None and (count &lt, 30):
+                time.sleep(10)
+                tx_receipt = w3.eth.getTransactionReceipt(result)
+            return(tx_receipt)
+            if tx_receipt is None:
+                tx_receipt = quot;Failed&quot;
+                return(tx_receipt)
+        ```
