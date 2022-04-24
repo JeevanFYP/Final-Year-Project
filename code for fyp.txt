@@ -35,7 +35,7 @@
             payload = json.loads(message.payload.decode())
             print("Message received:", payload)
         
-            command ={'led_on' : payload['light'] < 300 }
+            command ={'led_on' : payload['light'] < 23 }
             print("Sending messages:", command)
             
             print('connectedquot');
