@@ -85,7 +85,7 @@ def handle_telemetry(client, userdata, message):
 
 
 
-    command ={'led_on' : payload['consumption'] < 300 }
+    command ={'led_on' : payload['consumption'] < 23 }
 
 
 
