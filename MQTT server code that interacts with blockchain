@@ -1,3 +1,4 @@
+
 rom web3 import Web3
 
 import json
@@ -12,7 +13,7 @@ import paho.mqtt.client as mqtt
 
 # Fill in your infura API key here
 
-infura_url = "https://rinkeby.infura.io/v3/enter your infura endpoint here"
+infura_url = "https://rinkeby.infura.io/v3/d32092efc5b84419ac0f57e8ee925811"
 
 web3 = Web3(Web3.HTTPProvider(infura_url))
 
@@ -65,4 +66,59 @@ mqtt_client.connect('test.mosquitto.org')
 
 
 mqtt_client.loop_start()
+
+
+
+def handle_telemetry(client, userdata, message):
+
+
+
+    payload = json.loads(message.payload.decode())
+
+
+
+    print("Message received:", payload)
+
+
+
+
+
+
+
+    command ={'led_on' : payload['consumption'] < 300 }
+
+
+
+    print("Sending messages:", command)
+
+
+
+
+
+
+
+    client.publish(server_command_topic, json.dumps(command))
+
+
+
+
+
+
+
+mqtt_client.subscribe(client_telemetry_topic)
+
+mqtt_client.on_message = handle_telemetry
+
+
+
+
+
+
+
+while True:
+
+
+
+    time.sleep(2)
+
 
